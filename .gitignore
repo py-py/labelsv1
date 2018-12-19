@@ -1,8 +1,10 @@
 # CUSTOMIZATION
 #.env
 #local_settings.py
-#db.sqlite3
+db.sqlite3
 .idea
+project/media/**
+project/temp/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

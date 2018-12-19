@@ -21,9 +21,15 @@ class Manufactory(models.Model):
         verbose_name = _('Производитель')
         verbose_name_plural = _('Производители')
 
+    def __str__(self):
+        return '{class_name}("{name}")'.format(class_name=self.__class__.__name__, name=self.name)
+
 
 class Kind(models.Model):
     name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return '{class_name}("{name}")'.format(class_name=self.__class__.__name__, name=self.name)
 
     class Meta:
         verbose_name = _('Сорт')
@@ -38,6 +44,13 @@ class Image(models.Model):
     class Meta:
         verbose_name = _('Изображение')
         verbose_name_plural = _('Изображения')
+
+    def __str__(self):
+        return '{class_name}(id={id}, label="{name}")'.format(
+            class_name=self.__class__.__name__,
+            id=self.label.id,
+            name=self.label.name,
+        )
 
     def save(self, *args, **kwargs):
         image_url = kwargs.pop('image_url', None)
@@ -58,7 +71,7 @@ class Image(models.Model):
         if self.is_default:
             self.label.images.update(is_default=False)
         else:
-            self.is_default = True if self.label.images.filter(is_default=True).first() else False
+            self.is_default = False if self.label.images.filter(is_default=True).first() else True
         super(Image, self).save(*args, **kwargs)
 
 
