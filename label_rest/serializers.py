@@ -29,7 +29,15 @@ class ImageSerializer(serializers.ModelSerializer):
 
 class LabelSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True)
+    added_dt = serializers.SerializerMethodField()
+    updated_dt = serializers.SerializerMethodField()
 
     class Meta:
         model = Label
         fields = '__all__'
+
+    def get_added_dt(self, obj):
+        return int(obj.added_dt.timestamp() * 1000)
+
+    def get_updated_dt(self, obj):
+        return int(obj.updated_dt.timestamp() * 1000)

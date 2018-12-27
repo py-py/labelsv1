@@ -80,6 +80,8 @@ class Label(models.Model):
     kind = models.ForeignKey('label.Kind', verbose_name=_('Сорт'), on_delete=models.SET_NULL, related_name='labels', null=True)
     name = models.CharField(verbose_name=_('Наименование'), max_length=255)
     year = models.SmallIntegerField(verbose_name=_('Год выпуска'))
+    added_dt = models.DateTimeField(verbose_name=_('Дата добавления'), auto_now_add=True, null=True)
+    updated_dt = models.DateTimeField(verbose_name=_('Время последнеднего изменения'), auto_now=True, null=True)
 
     class Meta:
         verbose_name = _('Этикетка')
