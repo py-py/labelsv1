@@ -1,9 +1,10 @@
+from django.db.models import F
 from rest_framework import viewsets
 
 from label.models import *
 from .pagination import LabelPageNumberPagination
 from .serializers import *
-from .settings import LAST_LABELS_SIZE
+from .settings import LABELS_LAST_SIZE
 
 __all__ = (
     'ManufactoryViewSet',
@@ -37,5 +38,11 @@ class LabelViewSet(viewsets.ModelViewSet):
         queryset = super(LabelViewSet, self).get_queryset()
         queryset = queryset.order_by('-updated_dt')
         if 'last' in self.request.query_params:
-            return queryset[:LAST_LABELS_SIZE]
+            return queryset[:LABELS_LAST_SIZE]
         return queryset
+
+    def retrieve(self, *args, **kwargs):
+        instance = self.get_object()
+        instance.seen = F('seen') + 1
+        instance.save()
+        return super(LabelViewSet, self).retrieve(*args, **kwargs)

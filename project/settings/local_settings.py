@@ -7,3 +7,4 @@ INSTALLED_APPS += [
 ]
 
 MIDDLEWARE.insert(2, 'corsheaders.middleware.CorsMiddleware')
+CORS_ORIGIN_ALLOW_ALL = True

@@ -1,7 +1,7 @@
 from rest_framework.pagination import PageNumberPagination
 
-from .settings import PAGE_SIZE
+from .settings import PAGINATION_PAGE_SIZE
 
 
 class LabelPageNumberPagination(PageNumberPagination):
-    page_size = PAGE_SIZE
+    page_size = PAGINATION_PAGE_SIZE

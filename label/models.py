@@ -1,10 +1,12 @@
+from urllib.parse import urljoin
+
 import requests
 from django.core.files.temp import NamedTemporaryFile
-from django.core.files.uploadedfile import InMemoryUploadedFile, SimpleUploadedFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.utils.translation import gettext as _
 
-from project.settings import TEMP_ROOT
+from project.settings import TEMP_ROOT, MEDIA_URL
 
 __all__ = (
     'Manufactory',
@@ -82,6 +84,8 @@ class Label(models.Model):
     year = models.SmallIntegerField(verbose_name=_('Год выпуска'))
     added_dt = models.DateTimeField(verbose_name=_('Дата добавления'), auto_now_add=True, null=True)
     updated_dt = models.DateTimeField(verbose_name=_('Время последнеднего изменения'), auto_now=True, null=True)
+    seen = models.IntegerField(verbose_name=_('Просмотрено'), default=0)
+    rating = models.DecimalField(verbose_name=_('Рейтинг'), max_digits=3, decimal_places=2, default=5)
 
     class Meta:
         verbose_name = _('Этикетка')
@@ -93,3 +97,22 @@ class Label(models.Model):
     @property
     def default_image(self):
         return self.images.filter(is_default=True).first()
+
+    def get_related_labels(self, count):
+        result = []
+
+        related_by_kind = Label.objects.filter(kind=self.kind)[:count]
+        result += list(related_by_kind)
+        if len(result) >= count:
+            return result
+
+        needed_labels = count - len(result)
+        related_by_manufactory = Label.objects.filter(manufactory=self.manufactory).exclude(kind=self.kind)[:needed_labels]
+        result += list(related_by_manufactory)
+        if len(result) >= count:
+            return result
+
+        needed_labels = count-len(result)
+        related_by_other = Label.objects.difference(related_by_kind, related_by_manufactory)[:needed_labels]
+        result += list(related_by_other)
+        return result

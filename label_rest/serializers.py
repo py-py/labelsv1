@@ -1,5 +1,8 @@
 from rest_framework import serializers
+from rest_framework.reverse import reverse
+
 from label.models import *
+from label_rest.settings import LABELS_RELATED_SIZE
 
 __all__ = (
     'ManufactureSerializer',
@@ -29,8 +32,11 @@ class ImageSerializer(serializers.ModelSerializer):
 
 class LabelSerializer(serializers.ModelSerializer):
     images = ImageSerializer(many=True)
+    url = serializers.SerializerMethodField()
+    image_url = serializers.SerializerMethodField()
     added_dt = serializers.SerializerMethodField()
     updated_dt = serializers.SerializerMethodField()
+    related_labels = serializers.SerializerMethodField()
 
     class Meta:
         model = Label
@@ -41,3 +47,16 @@ class LabelSerializer(serializers.ModelSerializer):
 
     def get_updated_dt(self, obj):
         return int(obj.updated_dt.timestamp() * 1000)
+
+    def get_url(self, obj):
+        url = reverse('label_rest:label-detail', kwargs={'pk': obj.pk})
+        return self.context['request'].build_absolute_uri(url)
+
+    def get_image_url(self, obj):
+        if obj.default_image:
+            return self.context['request'].build_absolute_uri(obj.default_image.image.url)
+
+    def get_related_labels(self, obj):
+        related = obj.get_related_labels(LABELS_RELATED_SIZE)
+        return [self.context['request'].build_absolute_uri(i.default_image.image.url) for i in related]
+
