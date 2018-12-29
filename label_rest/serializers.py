@@ -57,6 +57,9 @@ class LabelSerializer(serializers.ModelSerializer):
             return self.context['request'].build_absolute_uri(obj.default_image.image.url)
 
     def get_related_labels(self, obj):
-        related = obj.get_related_labels(LABELS_RELATED_SIZE)
-        return [self.context['request'].build_absolute_uri(i.default_image.image.url) for i in related]
-
+        related_labels = obj.get_related_labels(LABELS_RELATED_SIZE)
+        data = [{
+            'id': label.id,
+            'image_url': self.context['request'].build_absolute_uri(label.default_image.image.url),
+        } for label in related_labels]
+        return data

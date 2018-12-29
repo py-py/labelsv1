@@ -1,12 +1,10 @@
-from urllib.parse import urljoin
-
 import requests
 from django.core.files.temp import NamedTemporaryFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.utils.translation import gettext as _
 
-from project.settings import TEMP_ROOT, MEDIA_URL
+from project.settings import TEMP_ROOT
 
 __all__ = (
     'Manufactory',
@@ -39,7 +37,8 @@ class Kind(models.Model):
 
 
 class Image(models.Model):
-    label = models.ForeignKey('label.Label', verbose_name=_('Этикетка'), on_delete=models.CASCADE, related_name='images')
+    label = models.ForeignKey('label.Label', verbose_name=_('Этикетка'), on_delete=models.CASCADE,
+                              related_name='images')
     image = models.ImageField(verbose_name=_('Изображение'), upload_to='images/')
     is_default = models.BooleanField(verbose_name=_('Изображение по-умолчанию'), default=False)
 
@@ -78,8 +77,10 @@ class Image(models.Model):
 
 
 class Label(models.Model):
-    manufactory = models.ForeignKey('label.Manufactory', verbose_name=_('Производитель'), on_delete=models.SET_NULL, related_name='labels', null=True)
-    kind = models.ForeignKey('label.Kind', verbose_name=_('Сорт'), on_delete=models.SET_NULL, related_name='labels', null=True)
+    manufactory = models.ForeignKey('label.Manufactory', verbose_name=_('Производитель'), on_delete=models.SET_NULL,
+                                    related_name='labels', null=True)
+    kind = models.ForeignKey('label.Kind', verbose_name=_('Сорт'), on_delete=models.SET_NULL, related_name='labels',
+                             null=True)
     name = models.CharField(verbose_name=_('Наименование'), max_length=255)
     year = models.SmallIntegerField(verbose_name=_('Год выпуска'))
     added_dt = models.DateTimeField(verbose_name=_('Дата добавления'), auto_now_add=True, null=True)
@@ -99,20 +100,21 @@ class Label(models.Model):
         return self.images.filter(is_default=True).first()
 
     def get_related_labels(self, count):
+        queryset = Label.objects.exclude(pk=self.pk)
         result = []
 
-        related_by_kind = Label.objects.filter(kind=self.kind)[:count]
+        related_by_kind = queryset.filter(kind=self.kind)[:count]
         result += list(related_by_kind)
         if len(result) >= count:
             return result
 
         needed_labels = count - len(result)
-        related_by_manufactory = Label.objects.filter(manufactory=self.manufactory).exclude(kind=self.kind)[:needed_labels]
+        related_by_manufactory = queryset.filter(manufactory=self.manufactory).exclude(kind=self.kind)[:needed_labels]
         result += list(related_by_manufactory)
         if len(result) >= count:
             return result
 
-        needed_labels = count-len(result)
-        related_by_other = Label.objects.difference(related_by_kind, related_by_manufactory)[:needed_labels]
+        needed_labels = count - len(result)
+        related_by_other = queryset.difference(related_by_kind, related_by_manufactory)[:needed_labels]
         result += list(related_by_other)
         return result
