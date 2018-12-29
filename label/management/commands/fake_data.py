@@ -20,14 +20,14 @@ class Command(BaseCommand):
         for _ in range(count_manufactories):
             manufactory = Manufactory.objects.create(name=fake.name())
             manufactories.append(manufactory)
-        self.stdout.write(self.style.SUCCESS(f'{count_manufactories} manufactories were created.'))
+        self.stdout.write(self.style.SUCCESS('{count} manufactories were created.'.format(count=count_manufactories)))
 
         # KIND
         kinds = []
         for _ in range(count_kinds):
             kind = Kind.objects.create(name=fake.name())
             kinds.append(kind)
-        self.stdout.write(self.style.SUCCESS(f'{count_kinds} kinds were created.'))
+        self.stdout.write(self.style.SUCCESS('{count} kinds were created.'.format(count=count_kinds)))
 
         for _ in range(count_label):
             label = Label(
@@ -39,3 +39,4 @@ class Command(BaseCommand):
             label.save()
             image = Image(label=label)
             image.save(image_url=image_template.format(width=400, height=500))
+        self.stdout.write(self.style.SUCCESS('{count} labels were created.'.format(count=count_label)))
