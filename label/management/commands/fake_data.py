@@ -11,16 +11,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         fake = Faker()
         image_template = 'https://placeimg.com/{width}/{height}/any'
-        count_manufactories = int(os.getenv('FAKE_MANUFACTORIES', 10))
-        count_kinds = int(os.getenv('FAKE_KINDS', 10))
-        count_label = int(os.getenv('FAKE_LABELS', 100))
+        count_manufactures = int(os.getenv('FAKE_MANUFACTURES', 3))
+        count_kinds = int(os.getenv('FAKE_KINDS', 3))
+        count_label = int(os.getenv('FAKE_LABELS', 10))
 
-        # MANUFACTORY
-        manufactories = []
-        for _ in range(count_manufactories):
-            manufactory = Manufactory.objects.create(name=fake.name())
-            manufactories.append(manufactory)
-        self.stdout.write(self.style.SUCCESS('{count} manufactories were created.'.format(count=count_manufactories)))
+        # MANUFACTURE
+        manufactures = []
+        for _ in range(count_manufactures):
+            manufacture = Manufacture.objects.create(name=fake.name())
+            manufactures.append(manufacture)
+        self.stdout.write(self.style.SUCCESS('{count} manufactures were created.'.format(count=count_manufactures)))
 
         # KIND
         kinds = []
@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
         for _ in range(count_label):
             label = Label(
-                manufactory=random.choice(manufactories),
+                manufacture=random.choice(manufactures),
                 kind=random.choice(kinds),
                 name=fake.name(),
                 year=fake.year()

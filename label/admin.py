@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import *
 
 
-class ManufactoryModelAdmin(admin.ModelAdmin):
+class ManufactureModelAdmin(admin.ModelAdmin):
     pass
 
 
@@ -19,7 +19,7 @@ class LabelModelAdmin(admin.ModelAdmin):
     inlines = (ImageModelAdmin, )
 
 
-admin.site.register(Manufactory, ManufactoryModelAdmin)
+admin.site.register(Manufacture, ManufactureModelAdmin)
 admin.site.register(Kind, KindModelAdmin)
 # admin.site.register(Image, ImageModelAdmin)
 admin.site.register(Label, LabelModelAdmin)

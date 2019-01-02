@@ -7,14 +7,14 @@ from django.utils.translation import gettext as _
 from project.settings import TEMP_ROOT
 
 __all__ = (
-    'Manufactory',
+    'Manufacture',
     'Kind',
     'Image',
     'Label',
 )
 
 
-class Manufactory(models.Model):
+class Manufacture(models.Model):
     name = models.CharField(max_length=255)
 
     class Meta:
@@ -77,10 +77,8 @@ class Image(models.Model):
 
 
 class Label(models.Model):
-    manufactory = models.ForeignKey('label.Manufactory', verbose_name=_('Производитель'), on_delete=models.SET_NULL,
-                                    related_name='labels', null=True)
-    kind = models.ForeignKey('label.Kind', verbose_name=_('Сорт'), on_delete=models.SET_NULL, related_name='labels',
-                             null=True)
+    manufacture = models.ForeignKey('label.Manufacture', verbose_name=_('Производитель'), on_delete=models.SET_NULL, related_name='labels', null=True)
+    kind = models.ForeignKey('label.Kind', verbose_name=_('Сорт'), on_delete=models.SET_NULL, related_name='labels', null=True)
     name = models.CharField(verbose_name=_('Наименование'), max_length=255)
     year = models.SmallIntegerField(verbose_name=_('Год выпуска'))
     added_dt = models.DateTimeField(verbose_name=_('Дата добавления'), auto_now_add=True, null=True)
@@ -109,12 +107,12 @@ class Label(models.Model):
             return result
 
         needed_labels = count - len(result)
-        related_by_manufactory = queryset.filter(manufactory=self.manufactory).exclude(kind=self.kind)[:needed_labels]
-        result += list(related_by_manufactory)
+        related_by_manufacture = queryset.filter(manufacture=self.manufacture).exclude(kind=self.kind)[:needed_labels]
+        result += list(related_by_manufacture)
         if len(result) >= count:
             return result
 
         needed_labels = count - len(result)
-        related_by_other = queryset.difference(related_by_kind, related_by_manufactory)[:needed_labels]
+        related_by_other = queryset.difference(related_by_kind, related_by_manufacture)[:needed_labels]
         result += list(related_by_other)
         return result

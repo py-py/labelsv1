@@ -7,15 +7,15 @@ from .serializers import *
 from .settings import LABELS_LAST_SIZE
 
 __all__ = (
-    'ManufactoryViewSet',
+    'ManufactureViewSet',
     'KindViewSet',
     'ImageViewSet',
     'LabelViewSet',
 )
 
 
-class ManufactoryViewSet(viewsets.ModelViewSet):
-    queryset = Manufactory.objects.all()
+class ManufactureViewSet(viewsets.ModelViewSet):
+    queryset = Manufacture.objects.all()
     serializer_class = ManufactureSerializer
 
 
