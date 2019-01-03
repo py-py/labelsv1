@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    image: label
+    container_name: label
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=prod
+    ports:
+      - 8000:8000
+    entrypoint: python manage.py runserver 0.0.0.0:8000
+

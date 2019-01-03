@@ -37,8 +37,7 @@ class Kind(models.Model):
 
 
 class Image(models.Model):
-    label = models.ForeignKey('label.Label', verbose_name=_('Этикетка'), on_delete=models.CASCADE,
-                              related_name='images')
+    label = models.ForeignKey('label.Label', verbose_name=_('Этикетка'), on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(verbose_name=_('Изображение'), upload_to='images/')
     is_default = models.BooleanField(verbose_name=_('Изображение по-умолчанию'), default=False)
 

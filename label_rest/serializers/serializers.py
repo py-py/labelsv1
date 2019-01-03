@@ -30,7 +30,7 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class LabelSerializer(serializers.ModelSerializer):
-    images = ImageSerializer(many=True)
+    images = ImageSerializer(many=True, read_only=True)  # using 2 requests;
     url = serializers.SerializerMethodField()
     image_url = serializers.SerializerMethodField()
     added_ts = serializers.SerializerMethodField()
@@ -39,6 +39,10 @@ class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = '__all__'
+        extra_kwargs = {
+            'kind': {'required': True},
+            'manufacture': {'required': True},
+        }
 
     def get_added_ts(self, obj):
         return int(obj.added_dt.timestamp() * 1000)

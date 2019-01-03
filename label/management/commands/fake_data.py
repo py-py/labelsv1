@@ -1,14 +1,19 @@
 import os
 import random
-
-from django.core.management import BaseCommand
+from dotenv import load_dotenv
 from faker import Faker
+from django.core.management import BaseCommand
 
 from label.models import *
+
+load_dotenv()
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        if os.getenv('ENVIRONMENT') == 'prod':
+            self.stdout.write(self.style.SUCCESS('Production server does not need to have a FAKE data.'))
+            return
         fake = Faker()
         image_template = 'https://placeimg.com/{width}/{height}/any'
         count_manufactures = int(os.getenv('FAKE_MANUFACTURES', 3))
