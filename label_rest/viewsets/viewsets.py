@@ -2,9 +2,9 @@ from django.db.models import F
 from rest_framework import viewsets
 
 from label.models import *
-from .pagination import LabelPageNumberPagination
-from .serializers import *
-from .settings import LABELS_LAST_SIZE
+from label_rest.pagination import LabelPageNumberPagination
+from label_rest.serializers import *
+from label_rest.settings import LABELS_LAST_SIZE
 
 __all__ = (
     'ManufactureViewSet',
@@ -46,3 +46,5 @@ class LabelViewSet(viewsets.ModelViewSet):
         instance.seen = F('seen') + 1
         instance.save()
         return super(LabelViewSet, self).retrieve(*args, **kwargs)
+
+

@@ -129,3 +129,12 @@ TEMP_ROOT = os.path.join(BASE_DIR, 'temp')
 
 TIME_ZONE = 'Europe/Kiev'
 USE_TZ = False
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}

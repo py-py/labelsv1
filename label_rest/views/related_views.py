@@ -1,17 +1,17 @@
-from rest_framework.exceptions import NotFound
 from rest_framework import views, status
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 
-from label.models import Label
-from label_rest.serializers import RelatedLabelSerializer
+from label.models import *
+from label_rest.serializers import *
 from label_rest.settings import LABELS_RELATED_SIZE
 
 __all__ = (
-    'RelatedLabelView',
+    'RelatedLabelAPIView',
 )
 
 
-class RelatedLabelView(views.APIView):
+class RelatedLabelAPIView(views.APIView):
     def get(self, request, id_label):
         try:
             label = Label.objects.get(id=id_label)
